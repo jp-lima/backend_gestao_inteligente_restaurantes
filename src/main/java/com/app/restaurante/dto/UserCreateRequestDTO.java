@@ -2,9 +2,14 @@ package com.app.restaurante.dto;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.time.LocalDate;
-
+@Getter
+@Setter
+@NoArgsConstructor
 public class UserCreateRequestDTO {
 
     @NotBlank(message = "O nome é obrigatório")
@@ -23,59 +28,6 @@ public class UserCreateRequestDTO {
     private String email;
 
     private String gender;
-
-    // Construtor vazio (obrigatório para desserialização do JSON)
-    public UserCreateRequestDTO() {
-    }
-
-    // Getters e Setters
-    public String getName() {
-        return name;
-    }
-
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getCpf() {
-        return cpf;
-    }
-
-    public void setCpf(String cpf) {
-        this.cpf = cpf;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public LocalDate getBirth_date() {
-        return birth_date;
-    }
-
-    public void setBirth_date(LocalDate birth_date) {
-        this.birth_date = birth_date;
-    }
-
-    public String getGender() {
-        return gender;
-    }
-
-    public void setGender(String gender) {
-        this.gender = gender;
-    }
-
 }
+
+
