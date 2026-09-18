@@ -15,7 +15,6 @@ public class UserMapper {
         user.setPassword(dto.getPassword());   // ⚠️ depois precisa criptografar!
         user.setBirth_date(dto.getBirth_date());
         user.setGender(dto.getGender());
-        user.setRole(dto.getRole());
         user.setEmail(dto.getEmail());
         return user;
     }

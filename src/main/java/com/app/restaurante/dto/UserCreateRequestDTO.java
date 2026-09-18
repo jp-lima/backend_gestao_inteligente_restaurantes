@@ -4,7 +4,6 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 public class UserCreateRequestDTO {
 
@@ -24,10 +23,6 @@ public class UserCreateRequestDTO {
     private String email;
 
     private String gender;
-
-    private String role;
-
-    private LocalDateTime created_at;
 
     // Construtor vazio (obrigatório para desserialização do JSON)
     public UserCreateRequestDTO() {
@@ -83,19 +78,4 @@ public class UserCreateRequestDTO {
         this.gender = gender;
     }
 
-    public String getRole() {
-        return role;
-    }
-
-    public void setRole(String role) {
-        this.role = role;
-    }
-
-    public LocalDateTime getCreated_at() {
-        return created_at;
-    }
-
-    public void setCreated_at(LocalDateTime created_at) {
-        this.created_at = created_at;
-    }
 }

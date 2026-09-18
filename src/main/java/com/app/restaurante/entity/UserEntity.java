@@ -19,7 +19,7 @@ public class UserEntity {
     private LocalDate birth_date;
     private String gender;
     private String email;
-    private String role;
+    private String role = "user";
 
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)
@@ -91,10 +91,6 @@ public class UserEntity {
 
     public String getRole() {
         return role;
-    }
-
-    public void setRole(String role) {
-        this.role = role;
     }
 
     public LocalDateTime getCreated_at() {
