@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class AuthService {
 
-    private final UserRepository userRepository;
+    privatt e final UserRepository userRepository;
     private final UserMapper userMapper;
 
     // injeção via construtor (melhor que @Autowired em campo)
