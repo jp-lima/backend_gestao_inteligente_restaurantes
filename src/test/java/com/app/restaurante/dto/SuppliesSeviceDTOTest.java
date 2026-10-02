@@ -1,12 +1,10 @@
-package com.app.restaurante.service;
+package com.app.restaurante.dto;
 
-import com.app.restaurante.dto.SuppliesCreateRequestDTO;
 import jakarta.validation.Validation;
 import org.junit.jupiter.api.BeforeAll;
 import jakarta.validation.Validator;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
