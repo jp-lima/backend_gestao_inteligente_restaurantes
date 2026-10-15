@@ -2,16 +2,20 @@ package com.app.restaurante.service;
 
 import com.app.restaurante.dto.LoginRequestDTO;
 import com.app.restaurante.dto.LoginResponseDTO;
+import com.app.restaurante.dto.RoleUpdateRequestDTO;
 import com.app.restaurante.dto.UserCreateRequestDTO;
 import com.app.restaurante.dto.UserCreateResponseDTO;
 import com.app.restaurante.entity.UserEntity;
 import com.app.restaurante.mapper.UserMapper;
 import com.app.restaurante.repository.UserRepository;
 import com.app.restaurante.security.JwtService;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
+
+import java.util.UUID;
 
 @Service
 public class AuthService {
@@ -47,5 +51,13 @@ public class AuthService {
         }
 
         return new LoginResponseDTO(jwtService.generateToken(user));
+    }
+
+    /** Só admin (endpoint protegido). Promove ou rebaixa usuário. */
+    public UserCreateResponseDTO updateRole(UUID id, RoleUpdateRequestDTO dto) {
+        UserEntity user = userRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Usuário não encontrado"));
+        user.setRole(JwtService.normalizeRole(dto.getRole()));
+        return userMapper.toResponseDTO(userRepository.save(user));
     }
 }

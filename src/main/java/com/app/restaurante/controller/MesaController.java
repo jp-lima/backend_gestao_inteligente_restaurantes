@@ -15,10 +15,14 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.security.access.prepost.PreAuthorize;
 import java.util.List;
 
 @RestController
 @RequestMapping("/mesas")
+@Tag(name = "Mesas", description = "Gestão de mesas")
 public class MesaController {
 
     private final MesaService mesaService;
@@ -28,21 +32,27 @@ public class MesaController {
     }
 
     @PostMapping
+    @PreAuthorize("hasRole('ADMIN')")
+    @Operation(summary = "Criar mesa (só admin)")
     public ResponseEntity<MesaResponseDTO> create(@Valid @RequestBody MesaCreateRequestDTO dto) {
         return ResponseEntity.status(HttpStatus.CREATED).body(mesaService.create(dto));
     }
 
     @GetMapping
+    @Operation(summary = "Listar mesas")
     public ResponseEntity<List<MesaResponseDTO>> findAll() {
         return ResponseEntity.ok(mesaService.findAll());
     }
 
     @GetMapping("/{id}")
+    @Operation(summary = "Buscar mesa por id")
     public ResponseEntity<MesaResponseDTO> findById(@PathVariable Long id) {
         return ResponseEntity.ok(mesaService.findById(id));
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    @Operation(summary = "Atualizar mesa (só admin)")
     public ResponseEntity<MesaResponseDTO> update(
             @PathVariable Long id,
             @Valid @RequestBody MesaCreateRequestDTO dto) {
@@ -50,6 +60,8 @@ public class MesaController {
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    @Operation(summary = "Excluir mesa (só admin)")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         mesaService.delete(id);
         return ResponseEntity.noContent().build();

@@ -28,6 +28,7 @@ public class UserEntity {
     private String gender;
     @Setter
     private String email;
+    @Setter
     private String role = "user";
 
     @CreationTimestamp

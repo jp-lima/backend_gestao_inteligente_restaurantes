@@ -24,8 +24,7 @@ public class JwtService {
     public JwtService(@Value("${jwt.secret}") String secret) {
         byte[] secretBytes = secret.getBytes(StandardCharsets.UTF_8);
         if (secretBytes.length < 32) {
-            throw new IllegalStateException(
-                    "JWT_SECRET precisa ter ao menos 32 bytes (256 bits) para HS256. Configure via .env.");
+            throw new IllegalStateException("JWT_SECRET precisa de 32+ bytes");
         }
         this.key = Keys.hmacShaKeyFor(secretBytes);
     }
@@ -34,6 +33,7 @@ public class JwtService {
         Instant now = Instant.now();
         return Jwts.builder()
                 .subject(user.getId().toString())
+                .claim("role", normalizeRole(user.getRole()))
                 .issuedAt(Date.from(now))
                 .expiration(Date.from(now.plusSeconds(EXPIRATION_MINUTES * 60)))
                 .signWith(key)
@@ -50,5 +50,17 @@ public class JwtService {
 
     public UUID getUserId(String token) {
         return UUID.fromString(validate(token).getSubject());
+    }
+
+    public String getRole(Claims claims) {
+        return normalizeRole(claims.get("role", String.class));
+    }
+
+    public static String normalizeRole(String role) {
+        if (role == null) {
+            return "USER";
+        }
+        String upper = role.toUpperCase();
+        return "ADMIN".equals(upper) ? "ADMIN" : "USER";
     }
 }
