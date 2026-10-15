@@ -15,10 +15,13 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.List;
 
 @RestController
 @RequestMapping("/tabs")
+@Tag(name = "Comandas (tabs)", description = "Gestão de comandas")
 public class TabController {
 
     private final TabService tabService;
@@ -28,21 +31,25 @@ public class TabController {
     }
 
     @PostMapping
+    @Operation(summary = "Abrir comanda")
     public ResponseEntity<TabResponseDTO> create(@Valid @RequestBody TabCreateRequestDTO dto) {
         return ResponseEntity.status(HttpStatus.CREATED).body(tabService.create(dto));
     }
 
     @GetMapping
+    @Operation(summary = "Listar comandas")
     public ResponseEntity<List<TabResponseDTO>> findAll() {
         return ResponseEntity.ok(tabService.findAll());
     }
 
     @GetMapping("/{id}")
+    @Operation(summary = "Buscar comanda por id")
     public ResponseEntity<TabResponseDTO> findById(@PathVariable Integer id) {
         return ResponseEntity.ok(tabService.findById(id));
     }
 
     @PutMapping("/{id}")
+    @Operation(summary = "Atualizar comanda")
     public ResponseEntity<TabResponseDTO> update(
             @PathVariable Integer id,
             @Valid @RequestBody TabCreateRequestDTO dto) {
@@ -50,6 +57,7 @@ public class TabController {
     }
 
     @DeleteMapping("/{id}")
+    @Operation(summary = "Fechar/excluir comanda")
     public ResponseEntity<Void> delete(@PathVariable Integer id) {
         tabService.delete(id);
         return ResponseEntity.noContent().build();
