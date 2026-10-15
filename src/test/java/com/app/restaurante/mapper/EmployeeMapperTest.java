@@ -28,7 +28,6 @@ class EmployeeMapperTest {
 
     private EmployeeCreateRequestDTO dtoValido() {
         EmployeeCreateRequestDTO dto = new EmployeeCreateRequestDTO();
-        dto.setUserId(10);
         dto.setPositionId(2);
         dto.setWorkModelId(3);
         dto.setSalary(new BigDecimal("3500.50"));
@@ -116,7 +115,6 @@ class EmployeeMapperTest {
 
             mapper.toEntity(dto);
 
-            assertEquals(10, dto.getUserId());
             assertEquals(2, dto.getPositionId());
             assertEquals(3, dto.getWorkModelId());
             assertEquals(new BigDecimal("3500.50"), dto.getSalary());
@@ -203,7 +201,6 @@ class EmployeeMapperTest {
         void sobrescreveCampos() {
             EmployeeEntity entity = entityCompleta();
             EmployeeCreateRequestDTO dto = new EmployeeCreateRequestDTO();
-            dto.setUserId(20);
             dto.setPositionId(5);
             dto.setWorkModelId(6);
             dto.setSalary(new BigDecimal("8000.00"));
@@ -249,7 +246,6 @@ class EmployeeMapperTest {
 
             mapper.updateEntityFromDTO(dto, entityCompleta());
 
-            assertEquals(10, dto.getUserId());
             assertEquals(new BigDecimal("3500.50"), dto.getSalary());
         }
 

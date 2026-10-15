@@ -55,7 +55,6 @@ class TabServiceIntegrationTest {
 
     private Long criarGarcom() {
         EmployeeEntity garcom = EmployeeEntity.builder()
-                .userId(10)
                 .positionId(2)
                 .workModelId(3)
                 .salary(new BigDecimal("3500.50"))

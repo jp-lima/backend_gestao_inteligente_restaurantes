@@ -43,9 +43,8 @@ class EmployeeServiceTest {
 
     // ---------- helpers ----------
 
-    private EmployeeCreateRequestDTO dto(Integer userId) {
+    private EmployeeCreateRequestDTO dto() {
         EmployeeCreateRequestDTO dto = new EmployeeCreateRequestDTO();
-        dto.setUserId(userId);
         dto.setPositionId(2);
         dto.setWorkModelId(3);
         dto.setSalary(new BigDecimal("3500.50"));
@@ -69,10 +68,9 @@ class EmployeeServiceTest {
         @Test
         @DisplayName("smoke test: cadastra um funcionário normalmente")
         void smokeTest() {
-            EmployeeResponseDTO response = employeeService.create(dto(10));
+            EmployeeResponseDTO response = employeeService.create(dto());
 
             assertNotNull(response.getId(), "o banco deve gerar o id");
-            assertEquals(10, response.getUserId());
             assertEquals(2, response.getPositionId());
             assertEquals(3, response.getWorkModelId());
             assertDecimalEquals("3500.50", response.getSalary());
@@ -86,7 +84,7 @@ class EmployeeServiceTest {
         @Test
         @DisplayName("deve preencher createdAt ao cadastrar")
         void preencheCreatedAt() {
-            EmployeeResponseDTO response = employeeService.create(dto(10));
+            EmployeeResponseDTO response = employeeService.create(dto());
 
             assertNotNull(response.getCreatedAt());
         }
@@ -94,7 +92,7 @@ class EmployeeServiceTest {
         @Test
         @DisplayName("deve persistir o registro no banco")
         void persisteNoBanco() {
-            EmployeeResponseDTO response = employeeService.create(dto(10));
+            EmployeeResponseDTO response = employeeService.create(dto());
 
             assertEquals(1, employeeRepository.count());
             assertTrue(employeeRepository.findById(response.getId()).isPresent());
@@ -103,8 +101,8 @@ class EmployeeServiceTest {
         @Test
         @DisplayName("deve permitir cadastrar funcionários diferentes")
         void funcionariosDiferentes() {
-            EmployeeResponseDTO primeiro = employeeService.create(dto(10));
-            EmployeeResponseDTO segundo = employeeService.create(dto(11));
+            EmployeeResponseDTO primeiro = employeeService.create(dto());
+            EmployeeResponseDTO segundo = employeeService.create(dto());
 
             assertNotEquals(primeiro.getId(), segundo.getId());
             assertEquals(2, employeeRepository.count());
@@ -121,12 +119,11 @@ class EmployeeServiceTest {
         @Test
         @DisplayName("findById deve retornar o funcionário cadastrado")
         void findById_existente() {
-            EmployeeResponseDTO criado = employeeService.create(dto(10));
+            EmployeeResponseDTO criado = employeeService.create(dto());
 
             EmployeeResponseDTO encontrado = employeeService.findById(criado.getId());
 
             assertEquals(criado.getId(), encontrado.getId());
-            assertEquals(10, encontrado.getUserId());
             assertDecimalEquals("3500.50", encontrado.getSalary());
         }
 
@@ -148,14 +145,12 @@ class EmployeeServiceTest {
         @Test
         @DisplayName("findAll deve retornar todos os funcionários cadastrados")
         void findAll_comRegistros() {
-            employeeService.create(dto(10));
-            employeeService.create(dto(11));
+            employeeService.create(dto());
+            employeeService.create(dto());
 
             List<EmployeeResponseDTO> todos = employeeService.findAll();
 
             assertEquals(2, todos.size());
-            assertTrue(todos.stream().anyMatch(e -> e.getUserId().equals(10)));
-            assertTrue(todos.stream().anyMatch(e -> e.getUserId().equals(11)));
         }
     }
 
@@ -169,10 +164,9 @@ class EmployeeServiceTest {
         @Test
         @DisplayName("deve alterar o funcionário e persistir no banco, sem criar outro registro")
         void atualizaEPersiste() {
-            EmployeeResponseDTO criado = employeeService.create(dto(10));
+            EmployeeResponseDTO criado = employeeService.create(dto());
 
             EmployeeCreateRequestDTO novo = new EmployeeCreateRequestDTO();
-            novo.setUserId(20);
             novo.setPositionId(5);
             novo.setWorkModelId(6);
             novo.setSalary(new BigDecimal("8000.00"));
@@ -185,7 +179,6 @@ class EmployeeServiceTest {
 
             // relê do banco para provar que persistiu
             EmployeeResponseDTO doBanco = employeeService.findById(criado.getId());
-            assertEquals(20, doBanco.getUserId());
             assertEquals(5, doBanco.getPositionId());
             assertEquals(6, doBanco.getWorkModelId());
             assertDecimalEquals("8000.00", doBanco.getSalary());
@@ -195,12 +188,12 @@ class EmployeeServiceTest {
         @Test
         @DisplayName("update não deve alterar o createdAt")
         void updateMantemCreatedAt() {
-            EmployeeResponseDTO criado = employeeService.create(dto(10));
+            EmployeeResponseDTO criado = employeeService.create(dto());
             // compara leitura do banco com leitura do banco (a resposta do create vem da memória,
             // com precisão diferente da gravada)
             var createdAtAntes = employeeService.findById(criado.getId()).getCreatedAt();
 
-            employeeService.update(criado.getId(), dto(20));
+            employeeService.update(criado.getId(), dto());
 
             var createdAtDepois = employeeService.findById(criado.getId()).getCreatedAt();
             assertEquals(createdAtAntes, createdAtDepois);
@@ -210,7 +203,7 @@ class EmployeeServiceTest {
         @DisplayName("update com id inexistente deve lançar EntityNotFoundException e não criar registro")
         void update_inexistente() {
             EntityNotFoundException ex = assertThrows(EntityNotFoundException.class,
-                    () -> employeeService.update(999_999L, dto(10)));
+                    () -> employeeService.update(999_999L, dto()));
 
             assertEquals("Funcionário não encontrado pelo ID: 999999", ex.getMessage());
             assertEquals(0, employeeRepository.count());
@@ -219,12 +212,11 @@ class EmployeeServiceTest {
         @Test
         @DisplayName("update não deve afetar os outros funcionários")
         void updateNaoAfetaOutros() {
-            EmployeeResponseDTO primeiro = employeeService.create(dto(10));
-            EmployeeResponseDTO segundo = employeeService.create(dto(11));
+            EmployeeResponseDTO primeiro = employeeService.create(dto());
+            EmployeeResponseDTO segundo = employeeService.create(dto());
 
-            employeeService.update(primeiro.getId(), dto(99));
+            employeeService.update(primeiro.getId(), dto());
 
-            assertEquals(11, employeeService.findById(segundo.getId()).getUserId());
         }
     }
 
@@ -238,7 +230,7 @@ class EmployeeServiceTest {
         @Test
         @DisplayName("deve remover o funcionário do banco")
         void removeFuncionario() {
-            EmployeeResponseDTO criado = employeeService.create(dto(10));
+            EmployeeResponseDTO criado = employeeService.create(dto());
 
             employeeService.delete(criado.getId());
 
@@ -259,19 +251,18 @@ class EmployeeServiceTest {
         @Test
         @DisplayName("deve remover apenas o funcionário informado")
         void removeSomenteOInformado() {
-            EmployeeResponseDTO primeiro = employeeService.create(dto(10));
-            EmployeeResponseDTO segundo = employeeService.create(dto(11));
+            EmployeeResponseDTO primeiro = employeeService.create(dto());
+            EmployeeResponseDTO segundo = employeeService.create(dto());
 
             employeeService.delete(primeiro.getId());
 
             assertEquals(1, employeeRepository.count());
-            assertEquals(11, employeeService.findById(segundo.getId()).getUserId());
         }
 
         @Test
         @DisplayName("deletar duas vezes o mesmo id deve falhar na segunda")
         void deletarDuasVezes() {
-            EmployeeResponseDTO criado = employeeService.create(dto(10));
+            EmployeeResponseDTO criado = employeeService.create(dto());
             employeeService.delete(criado.getId());
 
             assertThrows(EntityNotFoundException.class,

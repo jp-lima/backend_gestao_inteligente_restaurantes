@@ -33,7 +33,7 @@ class EmployeeCreateRequestDTOTest {
 
     private EmployeeCreateRequestDTO dtoValido() {
         return new EmployeeCreateRequestDTO(
-                10, 2, 3, new BigDecimal("3500.50"), new BigDecimal("40.00"));
+                10, 3, new BigDecimal("3500.50"), new BigDecimal("40.00"));
     }
 
     private Set<ConstraintViolation<EmployeeCreateRequestDTO>> validar(EmployeeCreateRequestDTO dto) {
@@ -92,7 +92,6 @@ class EmployeeCreateRequestDTOTest {
         @DisplayName("userId nulo deve gerar violação")
         void userIdNulo() {
             EmployeeCreateRequestDTO dto = dtoValido();
-            dto.setUserId(null);
 
             assertViolacaoUnica(dto, "userId", "User ID is required");
         }
@@ -125,7 +124,6 @@ class EmployeeCreateRequestDTOTest {
         @DisplayName("hoje ids zero ou negativos passam na validação (só há @NotNull)")
         void idsNaoPositivos_hojePassam(int valor) {
             EmployeeCreateRequestDTO dto = dtoValido();
-            dto.setUserId(valor);
             dto.setPositionId(valor);
             dto.setWorkModelId(valor);
 
