@@ -17,44 +17,25 @@ import java.util.UUID;
 @Service
 public class JwtService {
 
-    private final SecretKey key;
-    private final long accessExpirationMinutes;
-    private final long refreshExpirationDays;
+    private static final long EXPIRATION_MINUTES = 60;
 
-    public JwtService(
-            @Value("${jwt.secret}") String secret,
-            @Value("${jwt.access-expiration-minutes:15}") long accessExpirationMinutes,
-            @Value("${jwt.refresh-expiration-days:7}") long refreshExpirationDays) {
+    private final SecretKey key;
+
+    public JwtService(@Value("${jwt.secret}") String secret) {
         byte[] secretBytes = secret.getBytes(StandardCharsets.UTF_8);
         if (secretBytes.length < 32) {
             throw new IllegalStateException(
                     "JWT_SECRET precisa ter ao menos 32 bytes (256 bits) para HS256. Configure via .env.");
         }
         this.key = Keys.hmacShaKeyFor(secretBytes);
-        this.accessExpirationMinutes = accessExpirationMinutes;
-        this.refreshExpirationDays = refreshExpirationDays;
     }
 
-    public String generateAccessToken(UserEntity user) {
+    public String generateToken(UserEntity user) {
         Instant now = Instant.now();
         return Jwts.builder()
                 .subject(user.getId().toString())
-                .claim("email", user.getEmail())
-                .claim("role", user.getRole())
-                .claim("type", "access")
                 .issuedAt(Date.from(now))
-                .expiration(Date.from(now.plusSeconds(accessExpirationMinutes * 60)))
-                .signWith(key)
-                .compact();
-    }
-
-    public String generateRefreshToken(UserEntity user) {
-        Instant now = Instant.now();
-        return Jwts.builder()
-                .subject(user.getId().toString())
-                .claim("type", "refresh")
-                .issuedAt(Date.from(now))
-                .expiration(Date.from(now.plusSeconds(refreshExpirationDays * 24 * 60 * 60)))
+                .expiration(Date.from(now.plusSeconds(EXPIRATION_MINUTES * 60)))
                 .signWith(key)
                 .compact();
     }
@@ -69,22 +50,5 @@ public class JwtService {
 
     public UUID getUserId(String token) {
         return UUID.fromString(validate(token).getSubject());
-    }
-
-    public String getRole(Claims claims) {
-        Object role = claims.get("role");
-        return role != null ? role.toString() : "user";
-    }
-
-    public boolean isRefreshToken(Claims claims) {
-        return "refresh".equals(claims.get("type", String.class));
-    }
-
-    public boolean isAccessToken(Claims claims) {
-        return "access".equals(claims.get("type", String.class));
-    }
-
-    public long getAccessExpirationSeconds() {
-        return accessExpirationMinutes * 60;
     }
 }

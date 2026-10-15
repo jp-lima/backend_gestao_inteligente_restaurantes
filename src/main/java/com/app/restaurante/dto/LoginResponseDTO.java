@@ -12,13 +12,4 @@ import lombok.Setter;
 public class LoginResponseDTO {
 
     private String accessToken;
-    private String refreshToken;
-    private String tokenType = "Bearer";
-    private long expiresInSeconds;
-
-    public LoginResponseDTO(String accessToken, String refreshToken, long expiresInSeconds) {
-        this.accessToken = accessToken;
-        this.refreshToken = refreshToken;
-        this.expiresInSeconds = expiresInSeconds;
-    }
 }

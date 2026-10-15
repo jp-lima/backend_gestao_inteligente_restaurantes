@@ -1,12 +1,10 @@
 package com.app.restaurante.security;
 
-import io.jsonwebtoken.Claims;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -15,10 +13,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.UUID;
 
-/**
- * Middleware de access token (V1): valida o Bearer JWT e popula o contexto de segurança.
- * Rotas públicas (/auth/**, swagger) são ignoradas aqui e liberadas no SecurityConfig.
- */
+/** Middleware simples: valida o Bearer e libera a rota. */
 @Component
 public class JwtAuthFilter extends OncePerRequestFilter {
 
@@ -35,8 +30,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                 || path.equals("/auth")
                 || path.startsWith("/v3/api-docs")
                 || path.startsWith("/swagger-ui")
-                || path.equals("/swagger-ui.html")
-                || path.startsWith("/actuator/health");
+                || path.equals("/swagger-ui.html");
     }
 
     @Override
@@ -45,20 +39,9 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         String header = request.getHeader("Authorization");
 
         if (header != null && header.startsWith("Bearer ")) {
-            String token = header.substring(7);
             try {
-                Claims claims = jwtService.validate(token);
-                if (!jwtService.isAccessToken(claims)) {
-                    // Refresh token não serve como access: segue sem autenticação (vira 401/403).
-                    chain.doFilter(request, response);
-                    return;
-                }
-                UUID userId = UUID.fromString(claims.getSubject());
-                String role = jwtService.getRole(claims);
-                String authority = "ROLE_" + role.toUpperCase();
-
-                UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(
-                        userId, null, List.of(new SimpleGrantedAuthority(authority)));
+                UUID userId = jwtService.getUserId(header.substring(7));
+                var auth = new UsernamePasswordAuthenticationToken(userId, null, List.of());
                 SecurityContextHolder.getContext().setAuthentication(auth);
             } catch (Exception ex) {
                 SecurityContextHolder.clearContext();
