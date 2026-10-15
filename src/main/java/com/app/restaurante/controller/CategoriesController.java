@@ -5,6 +5,7 @@ import com.app.restaurante.dto.CategoriesResponseDTO;
 import com.app.restaurante.service.CategoriesService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.security.access.prepost.PreAuthorize;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,7 +25,8 @@ public class CategoriesController {
     }
 
     @PostMapping
-    @Operation(summary = "Criar categoria")
+    @PreAuthorize("hasRole('ADMIN')")
+    @Operation(summary = "Criar categoria (só admin)")
     public ResponseEntity<CategoriesResponseDTO> create(@Valid @RequestBody CategoriesCreateRequestDTO dto) {
         return ResponseEntity.status(HttpStatus.CREATED).body(categoriesService.create(dto));
     }
@@ -42,14 +44,16 @@ public class CategoriesController {
     }
 
     @PutMapping("/{id}")
-    @Operation(summary = "Atualizar categoria")
+    @PreAuthorize("hasRole('ADMIN')")
+    @Operation(summary = "Atualizar categoria (só admin)")
     public ResponseEntity<CategoriesResponseDTO> update(@PathVariable Long id,
                                                         @Valid @RequestBody CategoriesCreateRequestDTO dto) {
         return ResponseEntity.ok(categoriesService.update(id, dto));
     }
 
     @DeleteMapping("/{id}")
-    @Operation(summary = "Excluir categoria")
+    @PreAuthorize("hasRole('ADMIN')")
+    @Operation(summary = "Excluir categoria (só admin)")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         categoriesService.delete(id);
         return ResponseEntity.noContent().build();

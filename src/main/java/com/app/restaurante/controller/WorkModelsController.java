@@ -5,6 +5,7 @@ import com.app.restaurante.dto.WorkModelsResponseDTO;
 import com.app.restaurante.service.WorkModelsService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.security.access.prepost.PreAuthorize;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,7 +25,8 @@ public class WorkModelsController {
     }
 
     @PostMapping
-    @Operation(summary = "Criar modelo de trabalho")
+    @PreAuthorize("hasRole('ADMIN')")
+    @Operation(summary = "Criar modelo de trabalho (só admin)")
     public ResponseEntity<WorkModelsResponseDTO> create(@Valid @RequestBody WorkModelsCreateRequestDTO dto) {
         return ResponseEntity.status(HttpStatus.CREATED).body(workModelsService.create(dto));
     }
@@ -42,14 +44,16 @@ public class WorkModelsController {
     }
 
     @PutMapping("/{id}")
-    @Operation(summary = "Atualizar modelo de trabalho")
+    @PreAuthorize("hasRole('ADMIN')")
+    @Operation(summary = "Atualizar modelo de trabalho (só admin)")
     public ResponseEntity<WorkModelsResponseDTO> update(@PathVariable Long id,
                                                         @Valid @RequestBody WorkModelsCreateRequestDTO dto) {
         return ResponseEntity.ok(workModelsService.update(id, dto));
     }
 
     @DeleteMapping("/{id}")
-    @Operation(summary = "Excluir modelo de trabalho")
+    @PreAuthorize("hasRole('ADMIN')")
+    @Operation(summary = "Excluir modelo de trabalho (só admin)")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         workModelsService.delete(id);
         return ResponseEntity.noContent().build();

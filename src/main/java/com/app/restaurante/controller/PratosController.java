@@ -5,6 +5,7 @@ import com.app.restaurante.dto.PratoResponseDTO;
 import com.app.restaurante.service.PratoService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.security.access.prepost.PreAuthorize;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -45,13 +46,15 @@ public class PratosController {
     }
 
     @PostMapping
-    @Operation(summary = "Criar prato")
+    @PreAuthorize("hasRole('ADMIN')")
+    @Operation(summary = "Criar prato (só admin)")
     public ResponseEntity<PratoResponseDTO> create(@Valid @RequestBody PratoCreateRequestDTO dto) {
         return ResponseEntity.status(HttpStatus.CREATED).body(pratoService.create(dto));
     }
 
     @PutMapping("/{id}")
-    @Operation(summary = "Atualizar prato")
+    @PreAuthorize("hasRole('ADMIN')")
+    @Operation(summary = "Atualizar prato (só admin)")
     public ResponseEntity<PratoResponseDTO> update(
             @PathVariable Integer id,
             @Valid @RequestBody PratoCreateRequestDTO dto) {
@@ -61,7 +64,8 @@ public class PratosController {
     }
 
     @DeleteMapping("/{id}")
-    @Operation(summary = "Excluir prato")
+    @PreAuthorize("hasRole('ADMIN')")
+    @Operation(summary = "Excluir prato (só admin)")
     public ResponseEntity<Void> delete(@PathVariable Integer id) {
         return pratoService.delete(id)
                 ? ResponseEntity.noContent().build()

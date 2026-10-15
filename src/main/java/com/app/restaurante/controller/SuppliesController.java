@@ -5,6 +5,7 @@ import com.app.restaurante.dto.SuppliesResponseDTO;
 import com.app.restaurante.service.SuppliesService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.security.access.prepost.PreAuthorize;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,7 +25,8 @@ public class SuppliesController {
     }
 
     @PostMapping
-    @Operation(summary = "Criar insumo")
+    @PreAuthorize("hasRole('ADMIN')")
+    @Operation(summary = "Criar insumo (só admin)")
     public ResponseEntity<SuppliesResponseDTO> create(@Valid @RequestBody SuppliesCreateRequestDTO dto) {
         return ResponseEntity.status(HttpStatus.CREATED).body(suppliesService.create(dto));
     }
@@ -42,14 +44,16 @@ public class SuppliesController {
     }
 
     @PutMapping("/{id}")
-    @Operation(summary = "Atualizar insumo")
+    @PreAuthorize("hasRole('ADMIN')")
+    @Operation(summary = "Atualizar insumo (só admin)")
     public ResponseEntity<SuppliesResponseDTO> update(@PathVariable Long id,
                                                       @Valid @RequestBody SuppliesCreateRequestDTO dto) {
         return ResponseEntity.ok(suppliesService.update(id, dto));
     }
 
     @DeleteMapping("/{id}")
-    @Operation(summary = "Excluir insumo")
+    @PreAuthorize("hasRole('ADMIN')")
+    @Operation(summary = "Excluir insumo (só admin)")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         suppliesService.delete(id);
         return ResponseEntity.noContent().build();

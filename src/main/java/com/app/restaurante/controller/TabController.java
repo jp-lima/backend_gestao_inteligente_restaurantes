@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.security.access.prepost.PreAuthorize;
 import java.util.List;
 
 @RestController
@@ -31,7 +32,8 @@ public class TabController {
     }
 
     @PostMapping
-    @Operation(summary = "Abrir comanda")
+    @PreAuthorize("hasRole('ADMIN')")
+    @Operation(summary = "Abrir comanda (só admin)")
     public ResponseEntity<TabResponseDTO> create(@Valid @RequestBody TabCreateRequestDTO dto) {
         return ResponseEntity.status(HttpStatus.CREATED).body(tabService.create(dto));
     }
@@ -49,7 +51,8 @@ public class TabController {
     }
 
     @PutMapping("/{id}")
-    @Operation(summary = "Atualizar comanda")
+    @PreAuthorize("hasRole('ADMIN')")
+    @Operation(summary = "Atualizar comanda (só admin)")
     public ResponseEntity<TabResponseDTO> update(
             @PathVariable Integer id,
             @Valid @RequestBody TabCreateRequestDTO dto) {
@@ -57,7 +60,8 @@ public class TabController {
     }
 
     @DeleteMapping("/{id}")
-    @Operation(summary = "Fechar/excluir comanda")
+    @PreAuthorize("hasRole('ADMIN')")
+    @Operation(summary = "Fechar/excluir comanda (só admin)")
     public ResponseEntity<Void> delete(@PathVariable Integer id) {
         tabService.delete(id);
         return ResponseEntity.noContent().build();

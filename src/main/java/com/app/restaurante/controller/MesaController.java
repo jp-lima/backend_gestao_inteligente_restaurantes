@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.security.access.prepost.PreAuthorize;
 import java.util.List;
 
 @RestController
@@ -31,7 +32,8 @@ public class MesaController {
     }
 
     @PostMapping
-    @Operation(summary = "Criar mesa")
+    @PreAuthorize("hasRole('ADMIN')")
+    @Operation(summary = "Criar mesa (só admin)")
     public ResponseEntity<MesaResponseDTO> create(@Valid @RequestBody MesaCreateRequestDTO dto) {
         return ResponseEntity.status(HttpStatus.CREATED).body(mesaService.create(dto));
     }
@@ -49,7 +51,8 @@ public class MesaController {
     }
 
     @PutMapping("/{id}")
-    @Operation(summary = "Atualizar mesa")
+    @PreAuthorize("hasRole('ADMIN')")
+    @Operation(summary = "Atualizar mesa (só admin)")
     public ResponseEntity<MesaResponseDTO> update(
             @PathVariable Long id,
             @Valid @RequestBody MesaCreateRequestDTO dto) {
@@ -57,7 +60,8 @@ public class MesaController {
     }
 
     @DeleteMapping("/{id}")
-    @Operation(summary = "Excluir mesa")
+    @PreAuthorize("hasRole('ADMIN')")
+    @Operation(summary = "Excluir mesa (só admin)")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         mesaService.delete(id);
         return ResponseEntity.noContent().build();

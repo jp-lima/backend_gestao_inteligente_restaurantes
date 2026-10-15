@@ -5,6 +5,7 @@ import com.app.restaurante.dto.EmployeeResponseDTO;
 import com.app.restaurante.service.EmployeeService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.security.access.prepost.PreAuthorize;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -31,7 +32,8 @@ public class EmployeeController {
     }
 
     @PostMapping
-    @Operation(summary = "Criar funcionário")
+    @PreAuthorize("hasRole('ADMIN')")
+    @Operation(summary = "Criar funcionário (só admin)")
     public ResponseEntity<EmployeeResponseDTO> create(@Valid @RequestBody EmployeeCreateRequestDTO dto) {
         return ResponseEntity.status(HttpStatus.CREATED).body(employeeService.create(dto));
     }
@@ -49,7 +51,8 @@ public class EmployeeController {
     }
 
     @PutMapping("/{id}")
-    @Operation(summary = "Atualizar funcionário")
+    @PreAuthorize("hasRole('ADMIN')")
+    @Operation(summary = "Atualizar funcionário (só admin)")
     public ResponseEntity<EmployeeResponseDTO> update(
             @PathVariable Long id,
             @Valid @RequestBody EmployeeCreateRequestDTO dto) {
@@ -57,7 +60,8 @@ public class EmployeeController {
     }
 
     @DeleteMapping("/{id}")
-    @Operation(summary = "Excluir funcionário")
+    @PreAuthorize("hasRole('ADMIN')")
+    @Operation(summary = "Excluir funcionário (só admin)")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         employeeService.delete(id);
         return ResponseEntity.noContent().build();

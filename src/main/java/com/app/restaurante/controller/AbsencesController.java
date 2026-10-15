@@ -5,6 +5,7 @@ import com.app.restaurante.dto.AbsencesResponseDTO;
 import com.app.restaurante.service.AbsencesService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.security.access.prepost.PreAuthorize;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -56,13 +57,15 @@ public class AbsencesController {
     }
 
     @PatchMapping("/{id}/approve")
-    @Operation(summary = "Aprovar ausência")
+    @PreAuthorize("hasRole('ADMIN')")
+    @Operation(summary = "Aprovar ausência (só admin)")
     public ResponseEntity<AbsencesResponseDTO> approve(@PathVariable Long id) {
         return ResponseEntity.ok(absencesService.approve(id));
     }
 
     @PatchMapping("/{id}/reject")
-    @Operation(summary = "Rejeitar ausência")
+    @PreAuthorize("hasRole('ADMIN')")
+    @Operation(summary = "Rejeitar ausência (só admin)")
     public ResponseEntity<AbsencesResponseDTO> reject(@PathVariable Long id) {
         return ResponseEntity.ok(absencesService.reject(id));
     }
