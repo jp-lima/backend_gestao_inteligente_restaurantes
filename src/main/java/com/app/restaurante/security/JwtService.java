@@ -54,4 +54,16 @@ public class JwtService {
     public UUID getUserId(String token) {
         return UUID.fromString(validate(token).getSubject());
     }
+
+    public String getRole(Claims claims) {
+        return normalizeRole(claims.get("role", String.class));
+    }
+
+    public static String normalizeRole(String role) {
+        if (role == null) {
+            return "USER";
+        }
+        String upper = role.toUpperCase();
+        return "ADMIN".equals(upper) ? "ADMIN" : "USER";
+    }
 }

@@ -5,6 +5,8 @@ import com.app.restaurante.dto.LoginResponseDTO;
 import com.app.restaurante.dto.UserCreateRequestDTO;
 import com.app.restaurante.dto.UserCreateResponseDTO;
 import com.app.restaurante.service.AuthService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/auth")
+@Tag(name = "Autenticação", description = "Registro e login com access token")
 public class AuthController {
 
     private final AuthService authService;
@@ -24,11 +27,13 @@ public class AuthController {
     }
 
     @PostMapping("/register")
+    @Operation(summary = "Registrar usuário")
     public ResponseEntity<UserCreateResponseDTO> register(@Valid @RequestBody UserCreateRequestDTO dto) {
         return ResponseEntity.status(HttpStatus.CREATED).body(authService.createUser(dto));
     }
 
     @PostMapping("/login")
+    @Operation(summary = "Login e gerar access token")
     public ResponseEntity<LoginResponseDTO> login(@Valid @RequestBody LoginRequestDTO dto) {
         return ResponseEntity.ok(authService.login(dto));
     }
