@@ -39,7 +39,6 @@ class EmployeeMapperTest {
     private EmployeeEntity entityCompleta() {
         EmployeeEntity entity = new EmployeeEntity();
         entity.setId(1L);
-        entity.setUserId(10);
         entity.setPositionId(2);
         entity.setWorkModelId(3);
         entity.setSalary(new BigDecimal("3500.50"));
@@ -61,7 +60,6 @@ class EmployeeMapperTest {
             EmployeeEntity entity = mapper.toEntity(dtoValido());
 
             assertNotNull(entity);
-            assertEquals(10, entity.getUserId());
             assertEquals(2, entity.getPositionId());
             assertEquals(3, entity.getWorkModelId());
             assertEquals(new BigDecimal("3500.50"), entity.getSalary());
@@ -146,7 +144,6 @@ class EmployeeMapperTest {
 
             assertNotNull(dto);
             assertEquals(1L, dto.getId());
-            assertEquals(10, dto.getUserId());
             assertEquals(2, dto.getPositionId());
             assertEquals(3, dto.getWorkModelId());
             assertEquals(new BigDecimal("3500.50"), dto.getSalary());
@@ -165,7 +162,6 @@ class EmployeeMapperTest {
 
             assertNull(dto.getId());
             assertNull(dto.getCreatedAt());
-            assertEquals(10, dto.getUserId());
         }
 
         @Test
@@ -184,7 +180,6 @@ class EmployeeMapperTest {
             mapper.toResponseDTO(entity);
 
             assertEquals(1L, entity.getId());
-            assertEquals(10, entity.getUserId());
             assertEquals(new BigDecimal("3500.50"), entity.getSalary());
             assertEquals(CRIADO_EM, entity.getCreatedAt());
         }
@@ -216,7 +211,6 @@ class EmployeeMapperTest {
 
             mapper.updateEntityFromDTO(dto, entity);
 
-            assertEquals(20, entity.getUserId());
             assertEquals(5, entity.getPositionId());
             assertEquals(6, entity.getWorkModelId());
             assertEquals(new BigDecimal("8000.00"), entity.getSalary());
@@ -287,7 +281,6 @@ class EmployeeMapperTest {
         EmployeeResponseDTO response = mapper.toResponseDTO(entity);
 
         assertEquals(7L, response.getId());
-        assertEquals(10, response.getUserId());
         assertEquals(2, response.getPositionId());
         assertEquals(3, response.getWorkModelId());
         assertEquals(new BigDecimal("3500.50"), response.getSalary());

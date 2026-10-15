@@ -15,9 +15,6 @@ import java.math.BigDecimal;
 @AllArgsConstructor
 public class EmployeeCreateRequestDTO {
 
-    @NotNull(message = "User ID is required")
-    private Integer userId;
-
     @NotNull(message = "Position ID is required")
     private Integer positionId;
 
