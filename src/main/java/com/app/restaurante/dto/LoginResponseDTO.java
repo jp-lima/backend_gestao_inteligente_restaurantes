@@ -12,6 +12,7 @@ import lombok.Setter;
 public class LoginResponseDTO {
 
     private String accessToken;
+    private String id;
     private String name;
     private String email;
     private String role;

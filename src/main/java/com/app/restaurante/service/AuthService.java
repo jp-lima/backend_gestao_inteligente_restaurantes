@@ -51,7 +51,7 @@ public class AuthService {
         }
 
         String token = jwtService.generateToken(user);
-        return new LoginResponseDTO(token, user.getName(), user.getEmail(), user.getRole());
+        return new LoginResponseDTO(token, user.getId().toString(), user.getName(), user.getEmail(), user.getRole());
     }
 
     /** Só admin (endpoint protegido). Promove ou rebaixa usuário. */
