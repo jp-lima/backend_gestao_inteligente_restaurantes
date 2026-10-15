@@ -5,6 +5,7 @@ import com.app.restaurante.dto.TabResponseDTO;
 import com.app.restaurante.entity.TabEntity;
 import com.app.restaurante.mapper.TabMapper;
 import com.app.restaurante.repository.EmployeeRepository;
+import com.app.restaurante.repository.MesaRepository;
 import com.app.restaurante.repository.TabRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
@@ -17,12 +18,14 @@ public class TabService {
     private final TabRepository tabRepository;
     private final TabMapper tabMapper;
     private final EmployeeRepository employeeRepository;
+    private final MesaRepository mesaRepository;
 
     public TabService(TabRepository tabRepository, TabMapper tabMapper,
-                      EmployeeRepository employeeRepository) {
+                      EmployeeRepository employeeRepository, MesaRepository mesaRepository) {
         this.tabRepository = tabRepository;
         this.tabMapper = tabMapper;
         this.employeeRepository = employeeRepository;
+        this.mesaRepository = mesaRepository;
     }
 
     public TabResponseDTO create(TabCreateRequestDTO dto) {
@@ -61,7 +64,7 @@ public class TabService {
     }
 
     private void validateReferences(TabCreateRequestDTO dto) {
-        if (!tabRepository.existsTableById(dto.getTableId())) {
+        if (!mesaRepository.existsById(dto.getTableId().longValue())) {
             throw new EntityNotFoundException("Tabela não encontrada pelo ID: " + dto.getTableId());
         }
         if (dto.getWaiterId() != null
