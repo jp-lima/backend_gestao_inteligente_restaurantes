@@ -10,6 +10,7 @@ import lombok.Setter;
 
 import java.math.BigDecimal;
 import java.time.OffsetDateTime;
+import java.util.UUID;
 
 @Getter
 @Setter
@@ -20,8 +21,7 @@ public class TabCreateRequestDTO {
     @Positive(message = "O ID da table deve ser positivo")
     private Integer tableId;
 
-    @Positive(message = "O ID do usuário deve ser positivo")
-    private Integer userId;
+    private UUID userId;
 
     @Positive(message = "O ID do garçom deve ser positivo")
     private Integer waiterId;

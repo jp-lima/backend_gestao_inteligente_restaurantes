@@ -6,6 +6,7 @@ import lombok.Setter;
 
 import java.math.BigDecimal;
 import java.time.OffsetDateTime;
+import java.util.UUID;
 
 @Getter
 @Setter
@@ -13,7 +14,7 @@ public class TabResponseDTO {
 
     private Integer id;
     private Integer tableId;
-    private Integer userId;
+    private UUID userId;
     private Integer waiterId;
     private TabStatus status;
     private BigDecimal serviceCharge;
