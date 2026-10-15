@@ -46,6 +46,7 @@ public class AuthService {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Credenciais inválidas");
         }
 
-        return new LoginResponseDTO(jwtService.generateToken(user));
+        String token = jwtService.generateToken(user);
+        return new LoginResponseDTO(token, user.getName(), user.getEmail(), user.getRole());
     }
 }
