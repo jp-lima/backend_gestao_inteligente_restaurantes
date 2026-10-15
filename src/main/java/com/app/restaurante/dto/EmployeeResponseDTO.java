@@ -15,7 +15,6 @@ import java.time.OffsetDateTime;
 public class EmployeeResponseDTO {
 
     private Long id;
-    private Integer userId;
     private Integer positionId;
     private Integer workModelId;
     private BigDecimal salary;

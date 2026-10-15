@@ -17,7 +17,6 @@ public class EmployeeMapper {
     public EmployeeResponseDTO toResponseDTO(EmployeeEntity entity) {
         return new EmployeeResponseDTO(
                 entity.getId(),
-                entity.getUserId(),
                 entity.getPositionId(),
                 entity.getWorkModelId(),
                 entity.getSalary(),
@@ -27,7 +26,6 @@ public class EmployeeMapper {
     }
 
     public void updateEntityFromDTO(EmployeeCreateRequestDTO dto, EmployeeEntity entity) {
-        entity.setUserId(dto.getUserId());
         entity.setPositionId(dto.getPositionId());
         entity.setWorkModelId(dto.getWorkModelId());
         entity.setSalary(dto.getSalary());
