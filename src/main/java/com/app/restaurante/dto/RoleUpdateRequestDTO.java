@@ -12,6 +12,6 @@ import lombok.Setter;
 public class RoleUpdateRequestDTO {
 
     @NotBlank(message = "A role é obrigatória")
-    @Pattern(regexp = "(?i)ADMIN|USER", message = "Role deve ser ADMIN ou USER")
+    @Pattern(regexp = "(?i)ADMIN|USER|WAITER", message = "Role deve ser ADMIN, USER ou WAITER")
     private String role;
 }

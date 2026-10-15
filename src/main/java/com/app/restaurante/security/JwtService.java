@@ -64,6 +64,9 @@ public class JwtService {
             return "USER";
         }
         String upper = role.toUpperCase();
-        return "ADMIN".equals(upper) ? "ADMIN" : "USER";
+        return switch (upper) {
+            case "ADMIN", "WAITER" -> upper;
+            default -> "USER";
+        };
     }
 }

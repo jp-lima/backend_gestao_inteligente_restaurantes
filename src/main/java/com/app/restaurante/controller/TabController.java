@@ -32,8 +32,8 @@ public class TabController {
     }
 
     @PostMapping
-    @PreAuthorize("hasRole('ADMIN')")
-    @Operation(summary = "Abrir comanda (só admin)")
+    @PreAuthorize("hasAnyRole('ADMIN', 'WAITER')")
+    @Operation(summary = "Abrir comanda (admin ou garçom)")
     public ResponseEntity<TabResponseDTO> create(@Valid @RequestBody TabCreateRequestDTO dto) {
         return ResponseEntity.status(HttpStatus.CREATED).body(tabService.create(dto));
     }
@@ -51,8 +51,8 @@ public class TabController {
     }
 
     @PutMapping("/{id}")
-    @PreAuthorize("hasRole('ADMIN')")
-    @Operation(summary = "Atualizar comanda (só admin)")
+    @PreAuthorize("hasAnyRole('ADMIN', 'WAITER')")
+    @Operation(summary = "Atualizar comanda (admin ou garçom)")
     public ResponseEntity<TabResponseDTO> update(
             @PathVariable Integer id,
             @Valid @RequestBody TabCreateRequestDTO dto) {
@@ -60,8 +60,8 @@ public class TabController {
     }
 
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasRole('ADMIN')")
-    @Operation(summary = "Fechar/excluir comanda (só admin)")
+    @PreAuthorize("hasAnyRole('ADMIN', 'WAITER')")
+    @Operation(summary = "Fechar/excluir comanda (admin ou garçom)")
     public ResponseEntity<Void> delete(@PathVariable Integer id) {
         tabService.delete(id);
         return ResponseEntity.noContent().build();
