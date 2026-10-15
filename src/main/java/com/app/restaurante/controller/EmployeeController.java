@@ -3,6 +3,8 @@ package com.app.restaurante.controller;
 import com.app.restaurante.dto.EmployeeCreateRequestDTO;
 import com.app.restaurante.dto.EmployeeResponseDTO;
 import com.app.restaurante.service.EmployeeService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,6 +21,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/employees")
+@Tag(name = "Funcionários", description = "Gestão de funcionários")
 public class EmployeeController {
 
     private final EmployeeService employeeService;
@@ -28,21 +31,25 @@ public class EmployeeController {
     }
 
     @PostMapping
+    @Operation(summary = "Criar funcionário")
     public ResponseEntity<EmployeeResponseDTO> create(@Valid @RequestBody EmployeeCreateRequestDTO dto) {
         return ResponseEntity.status(HttpStatus.CREATED).body(employeeService.create(dto));
     }
 
     @GetMapping
+    @Operation(summary = "Listar funcionários")
     public ResponseEntity<List<EmployeeResponseDTO>> findAll() {
         return ResponseEntity.ok(employeeService.findAll());
     }
 
     @GetMapping("/{id}")
+    @Operation(summary = "Buscar funcionário por id")
     public ResponseEntity<EmployeeResponseDTO> findById(@PathVariable Long id) {
         return ResponseEntity.ok(employeeService.findById(id));
     }
 
     @PutMapping("/{id}")
+    @Operation(summary = "Atualizar funcionário")
     public ResponseEntity<EmployeeResponseDTO> update(
             @PathVariable Long id,
             @Valid @RequestBody EmployeeCreateRequestDTO dto) {
@@ -50,6 +57,7 @@ public class EmployeeController {
     }
 
     @DeleteMapping("/{id}")
+    @Operation(summary = "Excluir funcionário")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         employeeService.delete(id);
         return ResponseEntity.noContent().build();
