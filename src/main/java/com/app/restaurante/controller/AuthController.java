@@ -1,5 +1,8 @@
 package com.app.restaurante.controller;
 
+import com.app.restaurante.dto.LoginRequestDTO;
+import com.app.restaurante.dto.LoginResponseDTO;
+import com.app.restaurante.dto.RefreshRequestDTO;
 import com.app.restaurante.dto.UserCreateRequestDTO;
 import com.app.restaurante.dto.UserCreateResponseDTO;
 import com.app.restaurante.service.AuthService;
@@ -24,5 +27,15 @@ public class AuthController {
     @PostMapping("/register")
     public ResponseEntity<UserCreateResponseDTO> register(@Valid @RequestBody UserCreateRequestDTO dto) {
         return ResponseEntity.status(HttpStatus.CREATED).body(authService.createUser(dto));
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<LoginResponseDTO> login(@Valid @RequestBody LoginRequestDTO dto) {
+        return ResponseEntity.ok(authService.login(dto));
+    }
+
+    @PostMapping("/refresh")
+    public ResponseEntity<LoginResponseDTO> refresh(@Valid @RequestBody RefreshRequestDTO dto) {
+        return ResponseEntity.ok(authService.refresh(dto));
     }
 }
