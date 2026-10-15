@@ -61,6 +61,24 @@ class MesaServiceIntegrationTest {
         }
 
         @Test
+        @DisplayName("deve persistir o registro no banco")
+        void persisteNoBanco() {
+            MesaResponseDTO r = mesaService.create(dto(10, 4, "LIVRE"));
+
+            assertTrue(mesaRepository.findById(r.getId()).isPresent());
+        }
+
+        @Test
+        @DisplayName("deve permitir cadastrar mesas diferentes")
+        void mesasDiferentes() {
+            MesaResponseDTO primeira = mesaService.create(dto(10, 4, "LIVRE"));
+            MesaResponseDTO segunda = mesaService.create(dto(11, 2, "LIVRE"));
+
+            assertNotEquals(primeira.getId(), segunda.getId());
+            assertEquals(2, mesaRepository.count());
+        }
+
+        @Test
         @DisplayName("numero duplicado deve dar 409 CONFLICT")
         void numeroDuplicado() {
             mesaService.create(dto(10, 4, "LIVRE"));
@@ -107,11 +125,11 @@ class MesaServiceIntegrationTest {
     }
 
     @Nested
-    @DisplayName("update/delete")
-    class UpdateDelete {
+    @DisplayName("update")
+    class Update {
 
         @Test
-        @DisplayName("update altera e persiste")
+        @DisplayName("update altera e persiste, sem criar outro registro")
         void updateTest() {
             MesaResponseDTO criado = mesaService.create(dto(7, 2, "LIVRE"));
 
@@ -121,6 +139,35 @@ class MesaServiceIntegrationTest {
             assertEquals(6, atualizado.getCapacidade());
             assertEquals("OCUPADA", atualizado.getStatus());
             assertEquals(1, mesaRepository.count());
+
+            // relê do banco para provar que persistiu
+            MesaResponseDTO doBanco = mesaService.findById(criado.getId());
+            assertEquals(6, doBanco.getCapacidade());
+            assertEquals("OCUPADA", doBanco.getStatus());
+        }
+
+        @Test
+        @DisplayName("update não deve alterar o created_at")
+        void updateMantemCreatedAt() {
+            MesaResponseDTO criado = mesaService.create(dto(7, 2, "LIVRE"));
+            var createdAtAntes = mesaService.findById(criado.getId()).getCreated_at();
+
+            mesaService.update(criado.getId(), dto(7, 6, "OCUPADA"));
+
+            var createdAtDepois = mesaService.findById(criado.getId()).getCreated_at();
+            assertEquals(createdAtAntes, createdAtDepois);
+        }
+
+        @Test
+        @DisplayName("deve permitir atualizar mantendo o próprio número")
+        void atualizaMantendoMesmoNumero() {
+            MesaResponseDTO criado = mesaService.create(dto(7, 2, "LIVRE"));
+
+            MesaResponseDTO atualizado = mesaService.update(criado.getId(), dto(7, 8, "RESERVADA"));
+
+            assertEquals(7, atualizado.getNumero());
+            assertEquals(8, atualizado.getCapacidade());
+            assertEquals("RESERVADA", atualizado.getStatus());
         }
 
         @Test
@@ -132,14 +179,39 @@ class MesaServiceIntegrationTest {
             ResponseStatusException ex = assertThrows(ResponseStatusException.class,
                     () -> mesaService.update(segunda.getId(), dto(1, 2, "LIVRE")));
             assertEquals(HttpStatus.CONFLICT, ex.getStatusCode());
+
+            // garante que o registro original ficou inalterado
+            MesaResponseDTO original = mesaService.findById(segunda.getId());
+            assertEquals(2, original.getNumero());
         }
 
         @Test
-        @DisplayName("update inexistente lança EntityNotFoundException")
+        @DisplayName("update inexistente lança EntityNotFoundException e não cria registro")
         void updateInexistente() {
-            assertThrows(EntityNotFoundException.class,
+            EntityNotFoundException ex = assertThrows(EntityNotFoundException.class,
                     () -> mesaService.update(999999L, dto(1, 2, "LIVRE")));
+
+            assertTrue(ex.getMessage().contains("999999"));
+            assertEquals(0, mesaRepository.count());
         }
+
+        @Test
+        @DisplayName("update não deve afetar as outras mesas")
+        void updateNaoAfetaOutros() {
+            MesaResponseDTO primeira = mesaService.create(dto(1, 2, "LIVRE"));
+            MesaResponseDTO segunda = mesaService.create(dto(2, 4, "LIVRE"));
+
+            mesaService.update(primeira.getId(), dto(1, 6, "OCUPADA"));
+
+            MesaResponseDTO segundaDepois = mesaService.findById(segunda.getId());
+            assertEquals(4, segundaDepois.getCapacidade());
+            assertEquals("LIVRE", segundaDepois.getStatus());
+        }
+    }
+
+    @Nested
+    @DisplayName("delete")
+    class Delete {
 
         @Test
         @DisplayName("delete remove e segundo delete lança EntityNotFoundException")
@@ -150,6 +222,27 @@ class MesaServiceIntegrationTest {
             assertEquals(0, mesaRepository.count());
             assertThrows(EntityNotFoundException.class,
                     () -> mesaService.delete(criado.getId()));
+        }
+
+        @Test
+        @DisplayName("delete com id inexistente lança EntityNotFoundException")
+        void deleteInexistente() {
+            EntityNotFoundException ex = assertThrows(EntityNotFoundException.class,
+                    () -> mesaService.delete(999999L));
+
+            assertTrue(ex.getMessage().contains("999999"));
+        }
+
+        @Test
+        @DisplayName("delete deve remover apenas a mesa informada")
+        void removeSomenteAInformada() {
+            MesaResponseDTO primeira = mesaService.create(dto(1, 2, "LIVRE"));
+            MesaResponseDTO segunda = mesaService.create(dto(2, 4, "LIVRE"));
+
+            mesaService.delete(primeira.getId());
+
+            assertEquals(1, mesaRepository.count());
+            assertEquals(2, mesaService.findById(segunda.getId()).getNumero());
         }
     }
 }
