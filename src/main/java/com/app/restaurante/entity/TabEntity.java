@@ -19,7 +19,6 @@ import org.hibernate.type.SqlTypes;
 
 import java.math.BigDecimal;
 import java.time.OffsetDateTime;
-import java.util.UUID;
 
 @Getter
 @Setter
@@ -36,10 +35,6 @@ public class TabEntity {
 
     @Column(name = "table_id", nullable = false)
     private Integer tableId;
-
-    @JdbcTypeCode(SqlTypes.UUID)
-    @Column(name = "user_id")
-    private UUID userId;
 
     @Column(name = "waiter_id")
     private Integer waiterId;

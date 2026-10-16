@@ -19,7 +19,6 @@ public class TabMapper {
 
     public void updateEntityFromDTO(TabCreateRequestDTO dto, TabEntity entity) {
         entity.setTableId(dto.getTableId());
-        entity.setUserId(dto.getUserId());
         entity.setWaiterId(dto.getWaiterId());
         entity.setStatus(dto.getStatus() != null ? dto.getStatus() : TabStatus.aberto);
         entity.setServiceCharge(dto.getServiceCharge() != null ? dto.getServiceCharge() : BigDecimal.ZERO);
@@ -32,7 +31,6 @@ public class TabMapper {
         TabResponseDTO dto = new TabResponseDTO();
         dto.setId(entity.getId());
         dto.setTableId(entity.getTableId());
-        dto.setUserId(entity.getUserId());
         dto.setWaiterId(entity.getWaiterId());
         dto.setStatus(entity.getStatus());
         dto.setServiceCharge(entity.getServiceCharge());
