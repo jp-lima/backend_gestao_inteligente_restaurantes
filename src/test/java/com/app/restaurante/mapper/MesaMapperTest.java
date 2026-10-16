@@ -17,7 +17,6 @@ class MesaMapperTest {
     private MesaMapper mapper;
 
     private static final LocalDateTime CRIADO_EM = LocalDateTime.parse("2026-10-01T10:30:00");
-    private static final LocalDateTime ATUALIZADO_EM = LocalDateTime.parse("2026-10-10T15:45:00");
 
     @BeforeEach
     void setUp() {
@@ -28,20 +27,19 @@ class MesaMapperTest {
 
     private MesaCreateRequestDTO dtoValido() {
         MesaCreateRequestDTO dto = new MesaCreateRequestDTO();
-        dto.setNumero(10);
-        dto.setCapacidade(4);
-        dto.setStatus("LIVRE");
+        dto.setNumber(10);
+        dto.setSeating_capacity(4);
+        dto.setAvailable(true);
         return dto;
     }
 
     private MesaEntity entityCompleta() {
         MesaEntity entity = new MesaEntity();
-        entity.setId(1L);
-        entity.setNumero(10);
-        entity.setCapacidade(4);
-        entity.setStatus("LIVRE");
+        entity.setId(1);
+        entity.setNumber(10);
+        entity.setSeating_capacity(4);
+        entity.setAvailable(true);
         entity.setCreated_at(CRIADO_EM);
-        entity.setUpdated_at(ATUALIZADO_EM);
         return entity;
     }
 
@@ -58,19 +56,18 @@ class MesaMapperTest {
             MesaEntity entity = mapper.toEntity(dtoValido());
 
             assertNotNull(entity);
-            assertEquals(10, entity.getNumero());
-            assertEquals(4, entity.getCapacidade());
-            assertEquals("LIVRE", entity.getStatus());
+            assertEquals(10, entity.getNumber());
+            assertEquals(4, entity.getSeating_capacity());
+            assertTrue(entity.getAvailable());
         }
 
         @Test
-        @DisplayName("não deve preencher id, created_at nem updated_at (são gerados pelo banco/Hibernate)")
+        @DisplayName("não deve preencher id nem created_at (são gerados pelo banco/Hibernate)")
         void naoPreencheCamposGerados() {
             MesaEntity entity = mapper.toEntity(dtoValido());
 
             assertNull(entity.getId());
             assertNull(entity.getCreated_at());
-            assertNull(entity.getUpdated_at());
         }
 
         @Test
@@ -88,9 +85,9 @@ class MesaMapperTest {
 
             mapper.toEntity(dto);
 
-            assertEquals(10, dto.getNumero());
-            assertEquals(4, dto.getCapacidade());
-            assertEquals("LIVRE", dto.getStatus());
+            assertEquals(10, dto.getNumber());
+            assertEquals(4, dto.getSeating_capacity());
+            assertTrue(dto.getAvailable());
         }
 
         @Test
@@ -113,12 +110,11 @@ class MesaMapperTest {
             MesaResponseDTO dto = mapper.toResponseDTO(entityCompleta());
 
             assertNotNull(dto);
-            assertEquals(1L, dto.getId());
-            assertEquals(10, dto.getNumero());
-            assertEquals(4, dto.getCapacidade());
-            assertEquals("LIVRE", dto.getStatus());
+            assertEquals(1, dto.getId());
+            assertEquals(10, dto.getNumber());
+            assertEquals(4, dto.getSeating_capacity());
+            assertTrue(dto.getAvailable());
             assertEquals(CRIADO_EM, dto.getCreated_at());
-            assertEquals(ATUALIZADO_EM, dto.getUpdated_at());
         }
 
         @Test
@@ -127,14 +123,12 @@ class MesaMapperTest {
             MesaEntity entity = entityCompleta();
             entity.setId(null);
             entity.setCreated_at(null);
-            entity.setUpdated_at(null);
 
             MesaResponseDTO dto = mapper.toResponseDTO(entity);
 
             assertNull(dto.getId());
             assertNull(dto.getCreated_at());
-            assertNull(dto.getUpdated_at());
-            assertEquals(10, dto.getNumero());
+            assertEquals(10, dto.getNumber());
         }
 
         @Test
@@ -152,8 +146,8 @@ class MesaMapperTest {
 
             mapper.toResponseDTO(entity);
 
-            assertEquals(1L, entity.getId());
-            assertEquals(10, entity.getNumero());
+            assertEquals(1, entity.getId());
+            assertEquals(10, entity.getNumber());
             assertEquals(CRIADO_EM, entity.getCreated_at());
         }
 
@@ -176,27 +170,26 @@ class MesaMapperTest {
         void sobrescreveCampos() {
             MesaEntity entity = entityCompleta();
             MesaCreateRequestDTO dto = new MesaCreateRequestDTO();
-            dto.setNumero(20);
-            dto.setCapacidade(6);
-            dto.setStatus("OCUPADA");
+            dto.setNumber(20);
+            dto.setSeating_capacity(6);
+            dto.setAvailable(false);
 
             mapper.updateEntityFromDTO(dto, entity);
 
-            assertEquals(20, entity.getNumero());
-            assertEquals(6, entity.getCapacidade());
-            assertEquals("OCUPADA", entity.getStatus());
+            assertEquals(20, entity.getNumber());
+            assertEquals(6, entity.getSeating_capacity());
+            assertFalse(entity.getAvailable());
         }
 
         @Test
-        @DisplayName("não deve alterar id, created_at nem updated_at")
+        @DisplayName("não deve alterar id nem created_at")
         void preservaCamposGerados() {
             MesaEntity entity = entityCompleta();
 
             mapper.updateEntityFromDTO(dtoValido(), entity);
 
-            assertEquals(1L, entity.getId());
+            assertEquals(1, entity.getId());
             assertEquals(CRIADO_EM, entity.getCreated_at());
-            assertEquals(ATUALIZADO_EM, entity.getUpdated_at());
         }
 
         @Test
@@ -205,12 +198,12 @@ class MesaMapperTest {
             MesaEntity entity = entityCompleta();
             MesaEntity referencia = entity;
             MesaCreateRequestDTO dto = dtoValido();
-            dto.setStatus("RESERVADA");
+            dto.setAvailable(false);
 
             mapper.updateEntityFromDTO(dto, entity);
 
             assertSame(referencia, entity);
-            assertEquals("RESERVADA", referencia.getStatus());
+            assertFalse(referencia.getAvailable());
         }
 
         @Test
@@ -220,8 +213,8 @@ class MesaMapperTest {
 
             mapper.updateEntityFromDTO(dto, entityCompleta());
 
-            assertEquals(10, dto.getNumero());
-            assertEquals("LIVRE", dto.getStatus());
+            assertEquals(10, dto.getNumber());
+            assertTrue(dto.getAvailable());
         }
 
         @Test
@@ -246,17 +239,15 @@ class MesaMapperTest {
     @DisplayName("toEntity seguido de toResponseDTO deve preservar os dados do DTO original")
     void roundTrip() {
         MesaEntity entity = mapper.toEntity(dtoValido());
-        entity.setId(7L);
+        entity.setId(7);
         entity.setCreated_at(CRIADO_EM);
-        entity.setUpdated_at(ATUALIZADO_EM);
 
         MesaResponseDTO response = mapper.toResponseDTO(entity);
 
-        assertEquals(7L, response.getId());
-        assertEquals(10, response.getNumero());
-        assertEquals(4, response.getCapacidade());
-        assertEquals("LIVRE", response.getStatus());
+        assertEquals(7, response.getId());
+        assertEquals(10, response.getNumber());
+        assertEquals(4, response.getSeating_capacity());
+        assertTrue(response.getAvailable());
         assertEquals(CRIADO_EM, response.getCreated_at());
-        assertEquals(ATUALIZADO_EM, response.getUpdated_at());
     }
 }

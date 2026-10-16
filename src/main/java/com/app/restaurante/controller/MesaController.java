@@ -44,21 +44,21 @@ public class MesaController {
 
     @GetMapping("/{id}")
     @Operation(summary = "Buscar mesa por id")
-    public ResponseEntity<MesaResponseDTO> findById(@PathVariable Long id) {
+    public ResponseEntity<MesaResponseDTO> findById(@PathVariable Integer id) {
         return ResponseEntity.ok(mesaService.findById(id));
     }
 
     @PutMapping("/{id}")
     @Operation(summary = "Atualizar mesa")
     public ResponseEntity<MesaResponseDTO> update(
-            @PathVariable Long id,
+            @PathVariable Integer id,
             @Valid @RequestBody MesaCreateRequestDTO dto) {
         return ResponseEntity.ok(mesaService.update(id, dto));
     }
 
     @DeleteMapping("/{id}")
     @Operation(summary = "Excluir mesa")
-    public ResponseEntity<Void> delete(@PathVariable Long id) {
+    public ResponseEntity<Void> delete(@PathVariable Integer id) {
         mesaService.delete(id);
         return ResponseEntity.noContent().build();
     }

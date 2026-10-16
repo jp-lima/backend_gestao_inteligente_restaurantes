@@ -9,12 +9,11 @@ import java.time.LocalDateTime;
 @Setter
 public class MesaResponseDTO {
 
-    private Long id;
-    private Integer numero;
-    private Integer capacidade;
-    private String status;
+    private Integer id;
+    private Integer number;
+    private Integer seating_capacity;
+    private Boolean available;
     private LocalDateTime created_at;
-    private LocalDateTime updated_at;
 
     public MesaResponseDTO() {
     }

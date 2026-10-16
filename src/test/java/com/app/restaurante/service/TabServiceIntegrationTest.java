@@ -65,10 +65,11 @@ class TabServiceIntegrationTest {
 
     private Integer criarMesa(int numero, int capacidade) {
         MesaEntity mesa = MesaEntity.builder()
-                .numero(numero)
-                .capacidade(capacidade)
+                .number(numero)
+                .seating_capacity(capacidade)
+                .available(true)
                 .build();
-        return mesaRepository.save(mesa).getId().intValue();
+        return mesaRepository.save(mesa).getId();
     }
 
     @Nested

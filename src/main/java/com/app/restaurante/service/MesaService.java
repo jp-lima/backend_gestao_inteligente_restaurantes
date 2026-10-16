@@ -24,7 +24,7 @@ public class MesaService {
     }
 
     public MesaResponseDTO create(MesaCreateRequestDTO dto) {
-        if (mesaRepository.existsByNumero(dto.getNumero())) {
+        if (mesaRepository.existsByNumber(dto.getNumber())) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Já existe uma mesa com esse número");
         }
         MesaEntity saved = mesaRepository.save(mesaMapper.toEntity(dto));
@@ -38,24 +38,24 @@ public class MesaService {
                 .toList();
     }
 
-    public MesaResponseDTO findById(Long id) {
+    public MesaResponseDTO findById(Integer id) {
         return mesaRepository.findById(id)
                 .map(mesaMapper::toResponseDTO)
                 .orElseThrow(() -> new EntityNotFoundException("Mesa não encontrada pelo ID: " + id));
     }
 
-    public MesaResponseDTO update(Long id, MesaCreateRequestDTO dto) {
+    public MesaResponseDTO update(Integer id, MesaCreateRequestDTO dto) {
         MesaEntity entity = mesaRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Mesa não encontrada pelo ID: " + id));
 
-        if (!entity.getNumero().equals(dto.getNumero()) && mesaRepository.existsByNumero(dto.getNumero())) {
+        if (!entity.getNumber().equals(dto.getNumber()) && mesaRepository.existsByNumber(dto.getNumber())) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Já existe uma mesa com esse número");
         }
         mesaMapper.updateEntityFromDTO(dto, entity);
         return mesaMapper.toResponseDTO(mesaRepository.save(entity));
     }
 
-    public void delete(Long id) {
+    public void delete(Integer id) {
         if (!mesaRepository.existsById(id)) {
             throw new EntityNotFoundException("Mesa não encontrada pelo ID: " + id);
         }

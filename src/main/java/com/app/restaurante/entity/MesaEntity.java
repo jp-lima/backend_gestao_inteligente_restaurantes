@@ -22,28 +22,25 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "mesas")
+@Table(name = "tables")
 public class MesaEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Integer id;
 
     @Column(nullable = false, unique = true)
-    private Integer numero;
+    private Integer number;
 
     @Column(nullable = false)
-    private Integer capacidade;
+    private Integer seating_capacity;
 
     @Builder.Default
     @Column(nullable = false)
-    private String status = "LIVRE";
+    private Boolean available = true;
 
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)
     private LocalDateTime created_at;
 
-    @UpdateTimestamp
-    @Column(name = "updated_at")
-    private LocalDateTime updated_at;
 }

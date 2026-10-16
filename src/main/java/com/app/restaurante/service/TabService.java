@@ -64,8 +64,8 @@ public class TabService {
     }
 
     private void validateReferences(TabCreateRequestDTO dto) {
-        if (!mesaRepository.existsById(dto.getTableId().longValue())) {
-            throw new EntityNotFoundException("Tabela não encontrada pelo ID: " + dto.getTableId());
+        if (!mesaRepository.existsById(dto.getTableId())) {
+            throw new EntityNotFoundException("Mesa não encontrada pelo ID: " + dto.getTableId());
         }
         if (dto.getWaiterId() != null
                 && !employeeRepository.existsById(dto.getWaiterId().longValue())) {

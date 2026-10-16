@@ -10,26 +10,25 @@ public class MesaMapper {
 
     public MesaEntity toEntity(MesaCreateRequestDTO dto) {
         MesaEntity mesa = new MesaEntity();
-        mesa.setNumero(dto.getNumero());
-        mesa.setCapacidade(dto.getCapacidade());
-        mesa.setStatus(dto.getStatus());
+        mesa.setNumber(dto.getNumber());
+        mesa.setSeating_capacity(dto.getSeating_capacity());
+        mesa.setAvailable(dto.getAvailable());
         return mesa;
     }
 
     public void updateEntityFromDTO(MesaCreateRequestDTO dto, MesaEntity entity) {
-        entity.setNumero(dto.getNumero());
-        entity.setCapacidade(dto.getCapacidade());
-        entity.setStatus(dto.getStatus());
+        entity.setNumber(dto.getNumber());
+        entity.setSeating_capacity(dto.getSeating_capacity());
+        entity.setAvailable(dto.getAvailable());
     }
 
     public MesaResponseDTO toResponseDTO(MesaEntity entity) {
         MesaResponseDTO dto = new MesaResponseDTO();
         dto.setId(entity.getId());
-        dto.setNumero(entity.getNumero());
-        dto.setCapacidade(entity.getCapacidade());
-        dto.setStatus(entity.getStatus());
+        dto.setNumber(entity.getNumber());
+        dto.setSeating_capacity(entity.getSeating_capacity());
+        dto.setAvailable(entity.getAvailable());
         dto.setCreated_at(entity.getCreated_at());
-        dto.setUpdated_at(entity.getUpdated_at());
         return dto;
     }
 }

@@ -32,9 +32,9 @@ class MesaCreateRequestDTOTest {
 
     private MesaCreateRequestDTO dtoValido() {
         MesaCreateRequestDTO dto = new MesaCreateRequestDTO();
-        dto.setNumero(10);
-        dto.setCapacidade(4);
-        dto.setStatus("LIVRE");
+        dto.setNumber(10);
+        dto.setSeating_capacity(4);
+        dto.setAvailable(true);
         return dto;
     }
 
@@ -67,126 +67,116 @@ class MesaCreateRequestDTOTest {
                 .map(v -> v.getPropertyPath().toString())
                 .collect(Collectors.toSet());
 
-        assertEquals(Set.of("numero", "capacidade", "status"), camposComErro);
+        assertEquals(Set.of("number", "seating_capacity", "available"), camposComErro);
     }
 
     @Test
     @DisplayName("deve reportar vários campos inválidos ao mesmo tempo")
     void variosCamposInvalidos() {
         MesaCreateRequestDTO dto = dtoValido();
-        dto.setNumero(-1);
-        dto.setCapacidade(0);
-        dto.setStatus("");
+        dto.setNumber(-1);
+        dto.setSeating_capacity(0);
+        dto.setAvailable(null);
 
         assertEquals(3, validar(dto).size());
     }
 
     // =====================================================
-    // numero
+    // number
     // =====================================================
     @Nested
-    @DisplayName("numero")
-    class Numero {
+    @DisplayName("number")
+    class Number {
 
         @Test
         @DisplayName("nulo deve gerar violação")
         void nulo() {
             MesaCreateRequestDTO dto = dtoValido();
-            dto.setNumero(null);
+            dto.setNumber(null);
 
-            assertViolacaoUnica(dto, "numero", "O número da mesa é obrigatório");
+            assertViolacaoUnica(dto, "number", "O número da mesa é obrigatório");
         }
 
-        @ParameterizedTest(name = "numero = {0}")
+        @ParameterizedTest(name = "number = {0}")
         @ValueSource(ints = {0, -1, -100})
         @DisplayName("zero ou negativo deve gerar violação")
         void naoPositivo(int valor) {
             MesaCreateRequestDTO dto = dtoValido();
-            dto.setNumero(valor);
+            dto.setNumber(valor);
 
-            assertViolacaoUnica(dto, "numero", "O número da mesa deve ser positivo");
+            assertViolacaoUnica(dto, "number", "O número da mesa deve ser positivo");
         }
 
-        @ParameterizedTest(name = "numero = {0}")
+        @ParameterizedTest(name = "number = {0}")
         @ValueSource(ints = {1, 5, 999})
         @DisplayName("positivo deve ser válido")
         void positivo(int valor) {
             MesaCreateRequestDTO dto = dtoValido();
-            dto.setNumero(valor);
+            dto.setNumber(valor);
 
             assertTrue(validar(dto).isEmpty());
         }
     }
 
     // =====================================================
-    // capacidade
+    // seating_capacity
     // =====================================================
     @Nested
-    @DisplayName("capacidade")
-    class Capacidade {
+    @DisplayName("seating_capacity")
+    class SeatingCapacity {
 
         @Test
         @DisplayName("nulo deve gerar violação")
         void nulo() {
             MesaCreateRequestDTO dto = dtoValido();
-            dto.setCapacidade(null);
+            dto.setSeating_capacity(null);
 
-            assertViolacaoUnica(dto, "capacidade", "A capacidade é obrigatória");
+            assertViolacaoUnica(dto, "seating_capacity", "A capacidade é obrigatória");
         }
 
-        @ParameterizedTest(name = "capacidade = {0}")
+        @ParameterizedTest(name = "seating_capacity = {0}")
         @ValueSource(ints = {0, -1, -5})
         @DisplayName("zero ou negativo deve gerar violação")
         void menorQueUm(int valor) {
             MesaCreateRequestDTO dto = dtoValido();
-            dto.setCapacidade(valor);
+            dto.setSeating_capacity(valor);
 
-            assertViolacaoUnica(dto, "capacidade", "A capacidade deve ser no mínimo 1");
+            assertViolacaoUnica(dto, "seating_capacity", "A capacidade deve ser no mínimo 1");
         }
 
-        @ParameterizedTest(name = "capacidade = {0}")
+        @ParameterizedTest(name = "seating_capacity = {0}")
         @ValueSource(ints = {1, 2, 4, 100})
         @DisplayName("um ou maior deve ser válido")
         void valido(int valor) {
             MesaCreateRequestDTO dto = dtoValido();
-            dto.setCapacidade(valor);
+            dto.setSeating_capacity(valor);
 
             assertTrue(validar(dto).isEmpty());
         }
     }
 
     // =====================================================
-    // status
+    // available
     // =====================================================
     @Nested
-    @DisplayName("status")
-    class Status {
+    @DisplayName("available")
+    class Available {
 
         @Test
         @DisplayName("nulo deve gerar violação")
         void nulo() {
             MesaCreateRequestDTO dto = dtoValido();
-            dto.setStatus(null);
+            dto.setAvailable(null);
 
-            assertViolacaoUnica(dto, "status", "O status é obrigatório");
+            assertViolacaoUnica(dto, "available", "O campo available é obrigatório");
         }
 
-        @ParameterizedTest(name = "status = \"{0}\"")
-        @ValueSource(strings = {"", "   ", "\t", "\n"})
-        @DisplayName("vazio ou só com espaços/tab/newline deve gerar violação")
-        void emBranco(String valor) {
+        @ParameterizedTest(name = "available = {0}")
+        @ValueSource(booleans = {true, false})
+        @DisplayName("true ou false deve ser válido")
+        void valido(boolean valor) {
             MesaCreateRequestDTO dto = dtoValido();
-            dto.setStatus(valor);
-
-            assertViolacaoUnica(dto, "status", "O status é obrigatório");
-        }
-
-        @ParameterizedTest(name = "status = \"{0}\"")
-        @ValueSource(strings = {"LIVRE", "OCUPADA", "RESERVADA", "A"})
-        @DisplayName("texto não vazio deve ser válido")
-        void valido(String valor) {
-            MesaCreateRequestDTO dto = dtoValido();
-            dto.setStatus(valor);
+            dto.setAvailable(valor);
 
             assertTrue(validar(dto).isEmpty());
         }
